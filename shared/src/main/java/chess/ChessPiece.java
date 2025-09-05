@@ -1,6 +1,10 @@
 package chess;
 
 import java.util.Collection;
+import java.util.Objects;
+
+
+import chess.pieceMoveLogic.*;
 
 /**
  * Represents a single chess piece
@@ -10,8 +14,14 @@ import java.util.Collection;
  */
 public class ChessPiece {
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    private final ChessGame.TeamColor color;
+    private final ChessPiece.PieceType type;
+
+    public ChessPiece(ChessGame.TeamColor color, ChessPiece.PieceType type) {
+        this.color = color;
+        this.type = type;
     }
+
 
     /**
      * The various different chess piece options
@@ -29,14 +39,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return color;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -47,6 +57,59 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        switch (type) {
+            case ROOK:
+//                return RookMoves.getRookMoves(board, myPosition, color);
+            case BISHOP:
+//                return BishopMoves.getBishopMoves(board, myPosition, color);
+            case QUEEN:
+//                return QueenMoves.getQueenMoves(board, myPosition, color);
+            case KING:
+                return KingMoves.getKingMoves(board, myPosition, color);
+            case KNIGHT:
+//                return KnightMoves.getKnightMoves(board, myPosition, color);
+            case PAWN:
+//                return PawnMoves.getPawnMoves(board, myPosition, color);
+        }
+        return null;
+    }
+
+    public static boolean getMovesHelper(ChessBoard board, ChessPosition startPosition, int rOff, int cOff, ChessGame.TeamColor color, Collection<ChessMove> moves) {
+        int r = startPosition.getRow()+rOff;
+        int c = startPosition.getColumn()+cOff;
+        if(1<=r && r<=8 && 1<=c && c<=8){
+            ChessPosition pos = new ChessPosition(r, c);
+            ChessPiece Piece = board.getPiece(pos);
+            if(Piece == null){
+                moves.add(new ChessMove(startPosition, pos,null));
+                return true;
+            }
+            else if(board.getPiece(pos).getTeamColor() != color){
+                moves.add(new ChessMove(startPosition, pos,null));
+                return false;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(color, type);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ChessPiece piece)) {
+            return false;
+        }
+        return color == piece.color && type == piece.type;
+    }
+
+    @Override
+    public String toString() {
+        return "ChessPiece{" +
+                "color=" + color +
+                ", type=" + type +
+                '}';
     }
 }

@@ -1,5 +1,11 @@
 package chess;
 
+
+import java.util.Arrays;
+import java.util.Objects;
+import chess.ChessPiece.PieceType;
+
+
 /**
  * A chessboard that can hold and rearrange chess pieces.
  * <p>
@@ -8,8 +14,10 @@ package chess;
  */
 public class ChessBoard {
 
+    private ChessPiece[][] board;
+
     public ChessBoard() {
-        
+        board = new ChessPiece[8][8];
     }
 
     /**
@@ -19,7 +27,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        throw new RuntimeException("Not implemented");
+        board[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -30,7 +38,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        throw new RuntimeException("Not implemented");
+        return board[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -38,6 +46,61 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        board = new ChessPiece[8][8];
+        ChessGame.TeamColor white = ChessGame.TeamColor.WHITE;
+        ChessGame.TeamColor black = ChessGame.TeamColor.BLACK;
+        PieceType king = PieceType.KING;
+        PieceType queen = PieceType.QUEEN;
+        PieceType bishop = PieceType.BISHOP;
+        PieceType knight = PieceType.KNIGHT;
+        PieceType rook = PieceType.ROOK;
+        PieceType pawn = PieceType.PAWN;
+        ChessPiece wP = new ChessPiece(white,pawn);
+        ChessPiece bP = new ChessPiece(black,pawn);
+
+        //White
+        board[0][0] = new ChessPiece(white,rook);
+        board[0][1] = new ChessPiece(white,knight);
+        board[0][2] = new ChessPiece(white,bishop);
+        board[0][3] = new ChessPiece(white,queen);
+        board[0][4] = new ChessPiece(white,king);
+        board[0][7] = new ChessPiece(white,rook);
+        board[0][6] = new ChessPiece(white,knight);
+        board[0][5] = new ChessPiece(white,bishop);
+
+        //Black
+        board[7][0] = new ChessPiece(black,rook);
+        board[7][1] = new ChessPiece(black,knight);
+        board[7][2] = new ChessPiece(black,bishop);
+        board[7][3] = new ChessPiece(black,queen);
+        board[7][4] = new ChessPiece(black,king);
+        board[7][7] = new ChessPiece(black,rook);
+        board[7][6] = new ChessPiece(black,knight);
+        board[7][5] = new ChessPiece(black,bishop);
+
+        //Pawns
+        for(int col = 0; col < 8; col++){
+            board[1][col] = wP;
+            board[6][col] = bP;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "board=" + Arrays.toString(board) +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ChessBoard that)) return false;
+        return Objects.deepEquals(board, that.board);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.deepHashCode(board);
     }
 }
