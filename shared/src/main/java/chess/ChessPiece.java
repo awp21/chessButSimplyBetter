@@ -59,15 +59,15 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         switch (type) {
             case ROOK:
-//                return RookMoves.getRookMoves(board, myPosition, color);
+                return RookMoves.getRookMoves(board, myPosition, color);
             case BISHOP:
-//                return BishopMoves.getBishopMoves(board, myPosition, color);
+                return BishopMoves.getBishopMoves(board, myPosition, color);
             case QUEEN:
 //                return QueenMoves.getQueenMoves(board, myPosition, color);
             case KING:
                 return KingMoves.getKingMoves(board, myPosition, color);
             case KNIGHT:
-//                return KnightMoves.getKnightMoves(board, myPosition, color);
+                return KnightMoves.getKnightMoves(board, myPosition, color);
             case PAWN:
 //                return PawnMoves.getPawnMoves(board, myPosition, color);
         }
