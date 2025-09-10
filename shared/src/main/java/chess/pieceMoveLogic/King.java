@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import static chess.ChessPiece.getMovesHelper;
 
-public class KingMoves {
+public class King {
     public static Collection<ChessMove> getKingMoves(ChessBoard board, ChessPosition startPosition, ChessGame.TeamColor color) {
         Collection<ChessMove> moves = new ArrayList<>();
 
