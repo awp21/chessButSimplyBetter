@@ -103,6 +103,12 @@ public class ChessPiece {
         }
     }
 
+    public static void spaceOccupied(ChessBoard board, ChessPosition position) throws Exception{
+        if(board.getPiece(position)!=null){
+            throw new Exception("Space Occupied");
+        }
+    }
+
 
 
     @Override
