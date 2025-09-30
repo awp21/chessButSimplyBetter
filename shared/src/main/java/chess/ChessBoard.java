@@ -30,6 +30,7 @@ public class ChessBoard {
         board[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
+
     /**
      * Gets a chess piece on the chessboard
      *
@@ -102,5 +103,17 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(board);
+    }
+
+    public ChessBoard copy() {
+        ChessBoard clone = new ChessBoard();
+        for(int r = 0; r<=7; r++){
+            for(int c = 0; c<=7; c++){
+                ChessPosition pos = new ChessPosition(r+1,c+1);
+                ChessPiece piece = board[r][c];
+                clone.addPiece(pos,piece);
+            }
+        }
+        return clone;
     }
 }
