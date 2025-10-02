@@ -61,8 +61,7 @@ public class ChessGame {
             ChessBoard posBoard = board.copy();
             posBoard.addPiece(move.getEndPosition(),piece);
             posBoard.addPiece(startPosition,null);
-            boolean checkCheck = isinCheckHelper(posBoard,piece.getTeamColor());
-            if(!checkCheck){
+            if(!isinCheckHelper(posBoard,piece.getTeamColor())){
                 validM.add(move);
             }
         }
@@ -198,27 +197,14 @@ public class ChessGame {
     }
 
     private static boolean isinCheckHelper(ChessBoard board, ChessGame.TeamColor color){
-        ChessPosition kingPos = null;
-        outerloop:
-        for(int x = 1; x<=8; x++) {
-            for (int y = 1; y <= 8; y++) {
-                ChessPosition pos = new ChessPosition(x,y);
-                ChessPiece piece = board.getPiece(pos);
-                if(piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == color){
-                    kingPos = pos;
-                    break outerloop;
-                }
-            }
-        }
-        if(kingPos == null){
-            return false;
-        }
+        ChessPosition kingPos = findKing(board,color);
 
+        //Remove later
         KingPosCheck kingPosCheck = new KingPosCheck(board,color,kingPos);
 
         for(int x = 1; x<=8; x++){
             for(int y = 1; y<=8; y++){
-                if(oToELoop(x,y,kingPosCheck)){
+                if(searchAttackKing(x,y,kingPosCheck)){
                     return true;
                 }
             }
@@ -226,16 +212,36 @@ public class ChessGame {
         return false;
     }
 
-    public static boolean oToELoop(int x, int y, KingPosCheck info){
+    private static ChessPosition findKing(ChessBoard board, TeamColor color){
+        for(int x = 1; x<=8; x++) {
+            for (int y = 1; y <= 8; y++) {
+                ChessPosition pos = new ChessPosition(x,y);
+                ChessPiece piece = board.getPiece(pos);
+                if(piece != null && piece.getPieceType() == ChessPiece.PieceType.KING && piece.getTeamColor() == color){
+                    return pos;
+                }
+            }
+        }
+        return null;
+    }
+
+
+    private static boolean searchAttackKing(int x, int y, KingPosCheck info){
         ChessPosition pos = new ChessPosition(x,y);
         ChessPiece piece = info.board().getPiece(pos);
         if(piece != null && piece.getTeamColor()!=info.color()){
             Collection<ChessMove> checks = piece.pieceMoves(info.board(),pos);
-            for(ChessMove move : checks){
-                ChessPosition attack = move.getEndPosition();
-                if(attack.equals(info.p())){
-                    return true;
-                }
+            return containsKingPosition(checks,info.p());
+        }
+        return false;
+    }
+
+
+
+    private static boolean containsKingPosition(Collection<ChessMove> moves, ChessPosition target) {
+        for (ChessMove move : moves) {
+            if (move.getEndPosition().equals(target)) {
+                return true;
             }
         }
         return false;
