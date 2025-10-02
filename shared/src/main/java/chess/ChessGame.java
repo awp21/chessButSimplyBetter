@@ -54,16 +54,18 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> validM = new ArrayList<>();
-        Collection<ChessMove> posMoves = board.getPiece(startPosition).pieceMoves(board,startPosition);
         ChessPiece piece = board.getPiece(startPosition);
-
+        Collection<ChessMove> posMoves = piece.pieceMoves(board,startPosition);
+        ChessBoard savedBoard;
         for(ChessMove move : posMoves){
-            ChessBoard posBoard = board.copy();
-            posBoard.addPiece(move.getEndPosition(),piece);
-            posBoard.addPiece(startPosition,null);
-            if(!isinCheckHelper(posBoard,piece.getTeamColor())){
+            savedBoard = board.copy();
+            board.addPiece(move.getEndPosition(),piece);
+            //Maybe here
+            board.addPiece(startPosition,null);
+            if(!isInCheck(piece.getTeamColor())){
                 validM.add(move);
             }
+            board = savedBoard;
         }
         return validM;
     }
@@ -84,12 +86,12 @@ public class ChessGame {
         if(piece == null){
             throw new InvalidMoveException("Position is empty");
         }
-        Collection<ChessMove> testThese = validMoves(start);
-        if(!testThese.contains(move)){
-            throw new InvalidMoveException("Invalid Move");
-        }
         if(piece.getTeamColor() != teamTurn){
             throw new InvalidMoveException("Its not your turn");
+        }
+        Collection<ChessMove> validMovesToTest = validMoves(start);
+        if(!validMovesToTest.contains(move)){
+            throw new InvalidMoveException("Invalid Move");
         }
 
         ChessPiece.PieceType promotes = move.getPromotionPiece();
@@ -120,7 +122,16 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        return isinCheckHelper(board, teamColor);
+        //HERE IS MY ISSUE, I am not looking at the new fake board I think.
+        ChessPosition kingPos = findKing(teamColor);
+        for(int x = 1; x<=8; x++){
+            for(int y = 1; y<=8; y++){
+                if(searchAttackKing(x,y,teamColor,kingPos)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -152,7 +163,7 @@ public class ChessGame {
                 ChessPosition pos = new ChessPosition(r,c);
                 ChessPiece piece = board.getPiece(pos);
                 if(piece != null && piece.getTeamColor() == teamColor){
-                    validM = validMoves(pos);
+                    validM.addAll(validMoves(pos));
                     if(!validM.isEmpty()){
                         return true;
                     }
@@ -196,23 +207,7 @@ public class ChessGame {
         return board;
     }
 
-    private static boolean isinCheckHelper(ChessBoard board, ChessGame.TeamColor color){
-        ChessPosition kingPos = findKing(board,color);
-
-        //Remove later
-        KingPosCheck kingPosCheck = new KingPosCheck(board,color,kingPos);
-
-        for(int x = 1; x<=8; x++){
-            for(int y = 1; y<=8; y++){
-                if(searchAttackKing(x,y,kingPosCheck)){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private static ChessPosition findKing(ChessBoard board, TeamColor color){
+    private ChessPosition findKing(TeamColor color){
         for(int x = 1; x<=8; x++) {
             for (int y = 1; y <= 8; y++) {
                 ChessPosition pos = new ChessPosition(x,y);
@@ -226,19 +221,19 @@ public class ChessGame {
     }
 
 
-    private static boolean searchAttackKing(int x, int y, KingPosCheck info){
+    private boolean searchAttackKing(int x, int y,TeamColor color, ChessPosition kingPos){
         ChessPosition pos = new ChessPosition(x,y);
-        ChessPiece piece = info.board().getPiece(pos);
-        if(piece != null && piece.getTeamColor()!=info.color()){
-            Collection<ChessMove> checks = piece.pieceMoves(info.board(),pos);
-            return containsKingPosition(checks,info.p());
+        ChessPiece piece = board.getPiece(pos);
+        if(piece != null && piece.getTeamColor()!=color){
+            Collection<ChessMove> checks = piece.pieceMoves(board,kingPos);
+            return containsKingPosition(checks,kingPos);
         }
         return false;
     }
 
 
 
-    private static boolean containsKingPosition(Collection<ChessMove> moves, ChessPosition target) {
+    private boolean containsKingPosition(Collection<ChessMove> moves, ChessPosition target) {
         for (ChessMove move : moves) {
             if (move.getEndPosition().equals(target)) {
                 return true;
