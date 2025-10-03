@@ -55,6 +55,10 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> validM = new ArrayList<>();
         ChessPiece piece = board.getPiece(startPosition);
+        //maybe null check
+        if(piece == null){
+            return null;
+        }
         Collection<ChessMove> posMoves = piece.pieceMoves(board,startPosition);
         ChessBoard savedBoard;
         for(ChessMove move : posMoves){
@@ -122,11 +126,11 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        //HERE IS MY ISSUE, I am not looking at the new fake board I think.
         ChessPosition kingPos = findKing(teamColor);
         for(int x = 1; x<=8; x++){
             for(int y = 1; y<=8; y++){
-                if(searchAttackKing(x,y,teamColor,kingPos)){
+                ChessPosition pos = new ChessPosition(x,y);
+                if(searchAttackKing(pos,teamColor,kingPos)){
                     return true;
                 }
             }
@@ -221,11 +225,10 @@ public class ChessGame {
     }
 
 
-    private boolean searchAttackKing(int x, int y,TeamColor color, ChessPosition kingPos){
-        ChessPosition pos = new ChessPosition(x,y);
+    private boolean searchAttackKing(ChessPosition pos, TeamColor color, ChessPosition kingPos){
         ChessPiece piece = board.getPiece(pos);
         if(piece != null && piece.getTeamColor()!=color){
-            Collection<ChessMove> checks = piece.pieceMoves(board,kingPos);
+            Collection<ChessMove> checks = piece.pieceMoves(board,pos);
             return containsKingPosition(checks,kingPos);
         }
         return false;
@@ -254,5 +257,13 @@ public class ChessGame {
     @Override
     public int hashCode() {
         return Objects.hash(board, teamTurn, winner);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessGame{" +
+                "teamTurn=" + teamTurn +
+                ", board=" + board.toString() +
+                '}';
     }
 }

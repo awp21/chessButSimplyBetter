@@ -88,9 +88,19 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        return "ChessBoard{" +
-                "board=" + Arrays.toString(board) +
-                '}';
+        StringBuilder output = new StringBuilder();
+        output.append("\n");
+        for (int i = 8; i> 0; i--){
+            for (int j = 1; j<9; j++){
+                if(getPiece(new ChessPosition(i,j))!=null){
+                    output.append("|").append(getPiece(new ChessPosition(i,j)));
+                }else{
+                    output.append("| ");
+                }
+            }
+            output.append("|\n");
+        }
+        return output.toString();
     }
 
     @Override
