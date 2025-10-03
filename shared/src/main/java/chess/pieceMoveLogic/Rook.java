@@ -14,19 +14,19 @@ public class Rook {
     public static Collection<ChessMove> getMoves(ChessBoard board, ChessPosition startPosition, ChessGame.TeamColor color) {
         Collection<ChessMove> moves = new ArrayList<>();
         boolean t = true;
-        for(int x = 1; x<7 && t; x++){
+        for(int x = 1; x<8 && t; x++){
             t = getMovesHelper(board,startPosition,x,0,color,moves);
         }
         t=true;
-        for(int x = 1; x<7 && t; x++){
+        for(int x = 1; x<8 && t; x++){
             t = getMovesHelper(board,startPosition,-x,0,color,moves);
         }
         t=true;
-        for(int x = 1; x<7 && t; x++){
+        for(int x = 1; x<8 && t; x++){
             t = getMovesHelper(board,startPosition,0,x,color,moves);
         }
         t=true;
-        for(int x = 1; x<7 && t; x++){
+        for(int x = 1; x<8 && t; x++){
             t = getMovesHelper(board,startPosition,0,-x,color,moves);
         }
         return moves;
