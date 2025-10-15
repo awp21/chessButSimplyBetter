@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.*;
 import server.exceptions.BadRequestException;
+import server.exceptions.UsernameTakenException;
 
 public class Server {
 
@@ -29,6 +30,9 @@ public class Server {
         } catch (BadRequestException e) {
             ctx.json(serializer.toJson(e.getMessage()));
             ctx.status(401);
+        } catch (UsernameTakenException e) {
+            ctx.json(serializer.toJson(e.getMessage()));
+            ctx.status(402);
         }
     }
 
