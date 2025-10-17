@@ -1,4 +1,4 @@
 package chess.model;
 
-public record AuthData(String authtoken, String username) {
+public record AuthData(String username, String authToken) {
 }
