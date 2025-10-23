@@ -6,51 +6,46 @@ import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.*;
 import server.exceptions.BadRequestException;
+import server.exceptions.RecordValidator;
+import server.exceptions.UnauthorizedException;
 import server.exceptions.UsernameTakenException;
-
-
-
 
 public class Handler {
     private final Service service = new Service();
     private final Gson serializer = new Gson();
-    public Handler(){
 
+    public Handler(){
     }
 
-    public void register(Context ctx) {
+    public void register(Context ctx) throws Exception{
         UserData user = serializer.fromJson(ctx.body(), UserData.class);
-        try{
-            if(user.username() == null || user.password() == null || user.email() == null){
-                throw new BadRequestException("Error: Invalid Request, field is null");
-            }
+            recordCheckFields(user);
             AuthData auth = service.register(user);
             ctx.json(serializer.toJson(auth));
-        } catch (BadRequestException e) {
-            ctx.json(buildErrorMessages(e));
-            ctx.status(400);
-        } catch (UsernameTakenException e) {
-            ctx.json(buildErrorMessages(e));
-            ctx.status(403);
-        }
     }
 
-    public void login(Context ctx){
+    public void login(Context ctx) throws Exception{
         LoginRequest loginRequest = serializer.fromJson(ctx.body(),LoginRequest.class);
-        try{
-            if(loginRequest.username() == null || loginRequest.password() == null){
-                throw new BadRequestException("Error: Invalid Request, field is null");
-            }
-            AuthData auth = service.login(loginRequest);
-            ctx.json(serializer.toJson(auth));
-        }catch (BadRequestException e){
-            ctx.json(buildErrorMessages(e));
-            ctx.status(400);
-        }
+        recordCheckFields(loginRequest);
+        AuthData auth = service.login(loginRequest);
+        ctx.json(serializer.toJson(auth));
     }
 
     public void delete(Context ctx){
 
+    }
+
+    public void errorHandler(Exception e, Context ctx){
+        ctx.status(switch (e) {
+            case BadRequestException _ -> HttpStatus.BAD_REQUEST;
+            case UsernameTakenException _ -> HttpStatus.FORBIDDEN;
+            case UnauthorizedException _ -> HttpStatus.UNAUTHORIZED;
+            default -> HttpStatus.INTERNAL_SERVER_ERROR;
+        }).json(buildErrorMessages(e));
+    }
+
+    private void recordCheckFields(Record r) throws BadRequestException{
+        RecordValidator.validateNonNullRecord(r);
     }
 
     private String buildErrorMessages(Exception e){

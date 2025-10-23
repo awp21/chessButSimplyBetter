@@ -1,6 +1,6 @@
 package server.exceptions;
 
-public class UsernameTakenException extends RuntimeException {
+public class UsernameTakenException extends Exception {
     public UsernameTakenException(String message) {
         super(message);
     }
