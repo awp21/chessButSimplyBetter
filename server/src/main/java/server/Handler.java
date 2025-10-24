@@ -1,5 +1,6 @@
 package server;
 import chess.model.AuthData;
+import chess.model.AuthTokenRequest;
 import chess.model.LoginRequest;
 import chess.model.UserData;
 import com.google.gson.Gson;
@@ -19,9 +20,9 @@ public class Handler {
 
     public void register(Context ctx) throws Exception{
         UserData user = serializer.fromJson(ctx.body(), UserData.class);
-            recordCheckFields(user);
-            AuthData auth = service.register(user);
-            ctx.json(serializer.toJson(auth));
+        recordCheckFields(user);
+        AuthData auth = service.register(user);
+        ctx.json(serializer.toJson(auth));
     }
 
     public void login(Context ctx) throws Exception{
@@ -31,8 +32,24 @@ public class Handler {
         ctx.json(serializer.toJson(auth));
     }
 
-    public void delete(Context ctx){
+    public void logout(Context ctx) throws Exception{
+        AuthTokenRequest authTokenRequest = new AuthTokenRequest(ctx.header("authorization"));
+        recordCheckFields(authTokenRequest);
+        service.logout(authTokenRequest.authToken());
+    }
 
+    public void listGames(Context ctx) {
+
+    }
+
+    public void createGame(Context ctx) {
+    }
+
+    public void joinGame(Context ctx) {
+    }
+
+    public void delete(Context ctx) throws Exception{
+        service.clear();
     }
 
     public void errorHandler(Exception e, Context ctx){
@@ -52,6 +69,7 @@ public class Handler {
         return String.format("""
                 {"message": "%s"}""",e.getMessage());
     }
+
 
 
 }
