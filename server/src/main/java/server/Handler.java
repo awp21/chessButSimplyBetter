@@ -37,18 +37,22 @@ public class Handler {
 
     public void createGame(Context ctx) throws Exception{
         CreateGameRequest createGameRequest = serializer.fromJson(ctx.body(),CreateGameRequest.class);
-        createGameRequest = new CreateGameRequest(createGameRequest.gameName(), ctx.header("authorization"));
+        createGameRequest = new CreateGameRequest(createGameRequest.gameName(),
+                ctx.header("authorization"));
         recordCheckFields(createGameRequest);
         ctx.json(serializer.toJson(service.createGame(createGameRequest)));
     }
 
-    public void listGames(Context ctx) {
-
+    public void joinGame(Context ctx) throws Exception{
+        JoinGameRequest joinGameRequest = serializer.fromJson(ctx.body(),JoinGameRequest.class);
+        joinGameRequest = new JoinGameRequest(joinGameRequest.playerColor(), joinGameRequest.gameID(),
+                ctx.header("authorization"));
+        recordCheckFields(joinGameRequest);
+        service.joinGame(joinGameRequest);
     }
 
+    public void listGames(Context ctx) throws Exception{
 
-
-    public void joinGame(Context ctx) {
     }
 
     public void delete(Context ctx) throws Exception{
