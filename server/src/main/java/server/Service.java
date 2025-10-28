@@ -6,6 +6,9 @@ import dataaccess.*;
 import server.exceptions.BadRequestException;
 import server.exceptions.UnauthorizedException;
 import server.exceptions.UsernameTakenException;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -58,9 +61,16 @@ public class Service {
         }
     }
 
+    public ListGamesResponse listGames(String authToken) throws Exception{
+        if(authdao.getAuth(authToken)==null){throw new UnauthorizedException("Error: Incorrect AuthToken");}
+        List<GameData> games = new ArrayList<>(gamedao.listGames().values());
+        return new ListGamesResponse(games);
+    }
+
     public void clear() throws Exception {
         userdao.clear();
         authdao.clear();
+        gamedao.clear();
     }
 
 

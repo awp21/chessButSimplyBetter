@@ -21,6 +21,8 @@ public class GameMemDAO implements GameDAO{
     }
     public GameData getGame(int gameID){return gameDataCollection.get(gameID);}
 
+    public HashMap<Integer, GameData> listGames(){return gameDataCollection;}
+
     public void updateWhite(int gameID, String username) {
         GameData original = gameDataCollection.get(gameID);
         GameData edited = new GameData(gameID,username, original.blackUsername(),

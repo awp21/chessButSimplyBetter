@@ -52,7 +52,9 @@ public class Handler {
     }
 
     public void listGames(Context ctx) throws Exception{
-
+        AuthTokenRequest authTokenRequest = new AuthTokenRequest(ctx.header("authorization"));
+        recordCheckFields(authTokenRequest);
+        ctx.json(serializer.toJson(service.listGames(authTokenRequest.authToken())));
     }
 
     public void delete(Context ctx) throws Exception{
