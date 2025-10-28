@@ -2,8 +2,6 @@ package server;
 
 import chess.model.*;
 import dataaccess.*;
-import org.eclipse.jetty.server.Authentication;
-import server.exceptions.BadRequestException;
 import server.exceptions.UnauthorizedException;
 import server.exceptions.UsernameTakenException;
 import java.util.UUID;
@@ -12,6 +10,7 @@ import java.util.UUID;
 public class Service {
     private final UserDAO userdao = new UserMemDAO();
     private final AuthDAO authdao = new AuthMemDAO();
+    private final GameDAO gamedao = new GameMemDAO();
 
     public Service(){}
 
@@ -33,15 +32,13 @@ public class Service {
     }
 
     public void logout(String authToken)throws Exception{
-        if(authdao.getAuth(authToken)==null){
-            throw new UnauthorizedException("Error: Incorrect AuthToken");
-        }
+        if(authdao.getAuth(authToken)==null){throw new UnauthorizedException("Error: Incorrect AuthToken");}
         authdao.removeAuth(authToken);
     }
 
     public CreateGameResponse createGame(CreateGameRequest createGameRequest) throws Exception{
-
-        return new CreateGameResponse(123);
+        if(authdao.getAuth(createGameRequest.authToken())==null){throw new UnauthorizedException("Error: Incorrect AuthToken");}
+        return new CreateGameResponse(gamedao.addGame(createGameRequest.gameName()));
     }
 
     public void clear() throws Exception {
