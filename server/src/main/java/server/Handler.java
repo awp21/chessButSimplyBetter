@@ -1,8 +1,5 @@
 package server;
-import chess.model.AuthData;
-import chess.model.AuthTokenRequest;
-import chess.model.LoginRequest;
-import chess.model.UserData;
+import chess.model.*;
 import com.google.gson.Gson;
 import io.javalin.*;
 import io.javalin.http.*;
@@ -38,12 +35,18 @@ public class Handler {
         service.logout(authTokenRequest.authToken());
     }
 
+    public void createGame(Context ctx) throws Exception{
+        CreateGameRequest createGameRequest = serializer.fromJson(ctx.body(),CreateGameRequest.class);
+        createGameRequest = new CreateGameRequest(createGameRequest.gameName(), ctx.header("authorization"));
+        recordCheckFields(createGameRequest);
+        ctx.json(serializer.toJson(service.createGame(createGameRequest)));
+    }
+
     public void listGames(Context ctx) {
 
     }
 
-    public void createGame(Context ctx) {
-    }
+
 
     public void joinGame(Context ctx) {
     }

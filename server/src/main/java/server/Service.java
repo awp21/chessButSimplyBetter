@@ -1,8 +1,6 @@
 package server;
 
-import chess.model.AuthData;
-import chess.model.LoginRequest;
-import chess.model.UserData;
+import chess.model.*;
 import dataaccess.*;
 import org.eclipse.jetty.server.Authentication;
 import server.exceptions.BadRequestException;
@@ -41,6 +39,11 @@ public class Service {
         authdao.removeAuth(authToken);
     }
 
+    public CreateGameResponse createGame(CreateGameRequest createGameRequest) throws Exception{
+
+        return new CreateGameResponse(123);
+    }
+
     public void clear() throws Exception {
         userdao.clear();
         authdao.clear();
@@ -51,5 +54,6 @@ public class Service {
     private static String generateToken() {
         return UUID.randomUUID().toString();
     }
+
 
 }
