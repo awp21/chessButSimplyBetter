@@ -3,7 +3,13 @@ package server;
 import chess.ChessGame;
 import chess.model.*;
 import dataaccess.*;
+import dataaccess.memory.AuthMemDAO;
+import dataaccess.memory.GameMemDAO;
+import dataaccess.memory.UserMemDAO;
+import dataaccess.sql.DatabaseManager;
+import dataaccess.sql.UserSQLDAO;
 import server.exceptions.BadRequestException;
+import server.exceptions.DataAccessException;
 import server.exceptions.UnauthorizedException;
 import server.exceptions.UsernameTakenException;
 
@@ -13,11 +19,20 @@ import java.util.UUID;
 
 
 public class Service {
-    private final UserDAO userdao = new UserMemDAO();
+    private final UserDAO userdao = new UserSQLDAO();
     private final AuthDAO authdao = new AuthMemDAO();
     private final GameDAO gamedao = new GameMemDAO();
 
-    public Service(){}
+    public Service(){
+        try{
+            DatabaseManager.createDatabase();
+
+        } catch (DataAccessException e) {
+            System.out.println("SERVER FAILURE");
+            System.out.println(e.getMessage());
+            //Possibly switch to MEM DAOS here
+        }
+    }
 
     public AuthData register(UserData user)throws Exception{
         if(userdao.getUser(user.username()) != null){throw new UsernameTakenException("Error: Username already taken");}

@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.model.UserData;
+import server.exceptions.DataAccessException;
 
 
 public interface UserDAO {

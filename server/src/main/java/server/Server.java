@@ -1,8 +1,10 @@
 package server;
 
 
+import dataaccess.sql.DatabaseManager;
 import io.javalin.*;
 import io.javalin.http.*;
+import server.exceptions.DataAccessException;
 
 
 public class Server {
@@ -23,7 +25,7 @@ public class Server {
         javalin.exception(Exception.class,handler::errorHandler);
     }
 
-    public int run(int desiredPort) {
+    public int run(int desiredPort){
         javalin.start(desiredPort);
         return javalin.port();
     }

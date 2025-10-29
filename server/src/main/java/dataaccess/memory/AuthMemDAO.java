@@ -1,12 +1,12 @@
-package dataaccess;
+package dataaccess.memory;
 
 import chess.model.AuthData;
-import chess.model.UserData;
+import dataaccess.AuthDAO;
 
 
 import java.util.HashMap;
 
-public class AuthMemDAO implements AuthDAO{
+public class AuthMemDAO implements AuthDAO {
     private final HashMap<String, AuthData> authDataCollection;
     public AuthMemDAO(){
         authDataCollection = new HashMap<String, AuthData>();

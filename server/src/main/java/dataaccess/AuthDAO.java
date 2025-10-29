@@ -1,6 +1,7 @@
 package dataaccess;
 
 import chess.model.AuthData;
+import server.exceptions.DataAccessException;
 
 public interface AuthDAO {
     void addAuth(AuthData auth) throws DataAccessException;

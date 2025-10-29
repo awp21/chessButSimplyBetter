@@ -1,6 +1,7 @@
 package server;
 import chess.model.*;
 import com.google.gson.Gson;
+import dataaccess.sql.DatabaseManager;
 import io.javalin.*;
 import io.javalin.http.*;
 import server.exceptions.BadRequestException;
@@ -13,6 +14,7 @@ public class Handler {
     private final Gson serializer = new Gson();
 
     public Handler(){
+
     }
 
     public void register(Context ctx) throws Exception{

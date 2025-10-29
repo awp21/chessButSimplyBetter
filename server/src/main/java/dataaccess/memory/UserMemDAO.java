@@ -1,10 +1,12 @@
-package dataaccess;
+package dataaccess.memory;
 
 import chess.model.UserData;
+import dataaccess.UserDAO;
+
 import java.util.HashMap;
 
 
-public class UserMemDAO implements UserDAO{
+public class UserMemDAO implements UserDAO {
     private final HashMap<String,UserData> userDataCollection;
     public UserMemDAO(){userDataCollection = new HashMap<String, UserData>();}
     public void addUser(UserData user){userDataCollection.put(user.username(),user);}

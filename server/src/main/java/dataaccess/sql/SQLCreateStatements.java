@@ -1,19 +1,12 @@
 package dataaccess.sql;
 
-import dataaccess.DataAccessException;
+import server.exceptions.DataAccessException;
 
 import java.sql.*;
 
-public class SQLDataBaseManager {
-    public SQLDataBaseManager(){
-        try{
-            configureDatabase();
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
+public class SQLCreateStatements {
 
-    private final String[] nukeData = {
+    static final String[] nukeData = {
             """
             TRUNCATE userdatabase
             """,
@@ -26,7 +19,7 @@ public class SQLDataBaseManager {
     };
 
 
-    private final String[] createStatements = {
+    static final String[] createStatements = {
             """
             CREATE TABLE IF NOT EXISTS  userdatabase(
               `username` varchar(256) NOT NULL,
@@ -54,8 +47,7 @@ public class SQLDataBaseManager {
             """
     };
 
-    private void configureDatabase() throws DataAccessException {
-        DatabaseManager.createDatabase();
+    static void configureDatabase() throws DataAccessException {
         try (Connection conn = DatabaseManager.getConnection()) {
             for (String statement : createStatements) {
                 try (PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
@@ -67,6 +59,8 @@ public class SQLDataBaseManager {
         }
     }
 
+
+    //MAYBE I DON'T NEED THIS, I HAVE CLEAR FUNCTIONS
     public void goodbyeData() throws DataAccessException{
         try (Connection conn = DatabaseManager.getConnection()) {
             for (String statement : nukeData) {

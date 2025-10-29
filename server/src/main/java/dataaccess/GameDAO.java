@@ -1,6 +1,8 @@
 package dataaccess;
 import chess.ChessGame;
 import chess.model.GameData;
+import server.exceptions.DataAccessException;
+
 import java.util.HashMap;
 
 public interface GameDAO {
